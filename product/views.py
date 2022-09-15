@@ -9,6 +9,9 @@ from django.contrib.auth.hashers import  check_password
 import json
 from json import JSONEncoder
 from django.core import serializers
+from django.template import RequestContext
+from django.views.decorators.csrf import csrf_protect
+from django.shortcuts import render
 # Create your views here.
 class ProductEncoder(JSONEncoder):
         def default(self, o):
@@ -66,6 +69,7 @@ def cart(request):
     if customer:
         cartitem_list = CartItem.objects.all().filter(customer = customerid)
         total = 0
+        
         for item in cartitem_list:
             price = item.get_total()
             total = total+price
@@ -157,5 +161,10 @@ def signup(request):
                              )
             customer.register()
             return HttpResponseRedirect('login')
-    return render(request,"signup.html") 
+    return render(request,"signup.html")
+@csrf_protect
+def delete(request,pk) :
+    CartItem.objects.filter(id =pk).delete()
+    #csrfContext = RequestContext(request)
+    return render(request,'cart.html')
 

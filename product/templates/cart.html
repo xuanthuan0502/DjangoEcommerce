@@ -71,7 +71,7 @@
                 
                 <div class="col-sm-6">
                     <div class="shopping-item">
-                        <a href="cart">Cart - <span class="cart-amunt">$800</span> <i class="fa fa-shopping-cart"></i> <span class="product-count">5</span></a>
+                        <a href="cart">Cart - <span class="cart-amunt">$</span> <i class="fa fa-shopping-cart"></i> <span class="product-count"></span></a>
                     </div>
                 </div>
             </div>
@@ -91,9 +91,9 @@
                 </div> 
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
-                        <li><a href="/product/index">Trang chủ</a></li>
-                        <li><a href="/product/cart">Giỏ hàng</a></li>
-                        <li class="active"><a href="/product/order">Lịch sử đặt hàng</a></li>
+                        <li ><a href="/product/index">Trang chủ</a></li>
+                        <li class="active"><a href="/product/cart">Giỏ hàng</a></li>
+                        <li ><a href="/product/order">Lịch sử đặt hàng</a></li>
                         <li><a href="#">Liên hệ</a></li>
                     </ul>
                 </div>  
@@ -190,9 +190,11 @@
                                     <tbody>
                                         {% for item in cartitem_list %}
                                         <form method="POST">
-                                        <tr class="cart_item">
+                                        <tr class="cart_item" id = '{{item.id}}'>
                                             <td class="product-remove">
-                                                <a title="Remove this item" class="remove" href="#">×</a> 
+                                                
+                                                <a title="Remove this item" class="remove" onclick="submit_delete({{item.id}})">×</a> 
+                                                {% csrf_token %}
                                             </td>
 
                                             <td class="product-thumbnail">
@@ -200,7 +202,7 @@
                                             </td>
 
                                             <td class="product-name">
-                                                <a href="single-product.html">{{item.product.name}}</a> 
+                                                <a href="/product/single-product/{{item.product.id}}">{{item.product.name}}</a> 
                                             </td>
 
                                             <td class="product-price">
@@ -433,6 +435,23 @@
     <script src="{% static 'js/main.js' %}"></script>
     
     <!-- Slider -->
-    
+    <script>
+        function submit_delete(id) {
+            $.ajax({
+                url: 'delete/'+id,
+                
+                data: {
+                    id
+                    
+                },
+                success: function (response) {
+                    
+                    let value = '[id='+id+']'
+                    $(value).remove()
+                    
+                }
+            });
+        }
+      </script> 
   </body>
 </html>
